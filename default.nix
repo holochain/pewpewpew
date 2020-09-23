@@ -27,8 +27,7 @@ with holonix.pkgs;
   shellHook = holonix.pkgs.lib.concatStrings [
    holonix.shell.shellHook
    ''
-    touch .env
-    source .env
+    export BENCH_OUTPUT_DIR=$PWD/.bench
     export HC_TARGET_PREFIX=$NIX_ENV_PREFIX
     export CARGO_TARGET_DIR="$HC_TARGET_PREFIX/target"
     export HC_TEST_WASM_DIR="$HC_TARGET_PREFIX/.wasm_target"
@@ -39,6 +38,9 @@ with holonix.pkgs;
     mkdir -p $HC_WASM_CACHE_PATH
 
     export PEWPEWPEW_PORT=4343
+
+    touch .env
+    source .env
    ''
   ];
 
@@ -91,8 +93,12 @@ with holonix.pkgs;
      curl -L --cacert $SSL_CERT_FILE -H "Authorization: token $token" "https://github.com/holochain/holochain/archive/$ref.tar.gz" > $tarball
      tar -zxvf $tarball -C $dir
 
-     ### bench code
      cd $dir/holochain-$ref
+
+     ### build wasms
+     cargo build --features 'build_wasms' --manifest-path=crates/holochain/Cargo.toml
+
+     ### bench code
      cargo bench --bench bench -- --save-baseline $ref
 
     }
@@ -127,7 +133,7 @@ with holonix.pkgs;
     ++ ([(
      holonix.pkgs.writeShellScriptBin "pewpewpew" ''
      # compile and build pewpewpew
-     ( cd crates/pewpewpew && cargo run )
+     cargo run
      '')])
 
     ++ ([(
@@ -139,7 +145,7 @@ with holonix.pkgs;
     ++ ([(
      holonix.pkgs.writeShellScriptBin "pewpewpew-gen-secret" ''
      # generate a new github secret
-     cat /dev/urandom | head -c 64 | base64
+     cat /dev/urandom | head -c 64 | base64 -w 0
     '')])
   ;
  });

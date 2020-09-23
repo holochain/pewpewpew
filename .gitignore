@@ -1,1 +1,7 @@
 .git
+.env
+target
+.cargo
+.wasm_cache
+.wasm_target
+.bench
