@@ -50,6 +50,7 @@ with holonix.pkgs;
    holonix.pkgs.fd
    holonix.pkgs.ngrok
    holonix.pkgs.jq
+   holonix.pkgs.tmux
   ]
    ++ holonix.shell.buildInputs
 
@@ -137,10 +138,30 @@ with holonix.pkgs;
      '')])
 
     ++ ([(
+     holonix.pkgs.writeShellScriptBin "pewpewpew-detached" ''
+      tmux new -d -spewpewpew -- pewpewpew
+     '')])
+
+    ++ ([(
+     holonix.pkgs.writeShellScriptBin "pewpewpew-attach" ''
+      tmux attach -tpewpewpew
+    '')])
+
+    ++ ([(
      holonix.pkgs.writeShellScriptBin "pewpewpew-ngrok" ''
      # serve up a local pewpewpew instance that github can point to for testing
      ngrok http http://127.0.0.1:$PEWPEWPEW_PORT
     '')])
+
+    ++ ([(
+     holonix.pkgs.writeShellScriptBin "pewpewpew-ngrok-detached" ''
+     tmux new -d -spewpewpew-ngrok -- pewpewpew-ngrok
+     '')])
+
+    ++ ([(
+     holonix.pkgs.writeShellScriptBin "pewpewpew-ngrok-attach" ''
+     tmux attach -tpewpewpew-ngrok
+     '')])
 
     ++ ([(
      holonix.pkgs.writeShellScriptBin "pewpewpew-gen-secret" ''
