@@ -150,7 +150,7 @@ with holonix.pkgs;
     ++ ([(
      holonix.pkgs.writeShellScriptBin "pewpewpew-ngrok" ''
      # serve up a local pewpewpew instance that github can point to for testing
-     ngrok http -hostname=holochain-pewpewpew.ngrok.io http://127.0.0.1:$PEWPEWPEW_PORT
+     ngrok http -hostname=$PEWPEWPEW_HOSTNAME http://127.0.0.1:$PEWPEWPEW_PORT
     '')])
 
     ++ ([(
